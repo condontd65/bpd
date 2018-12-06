@@ -4,6 +4,9 @@ library(DBI)
 library(RODBC)
 library(dplyr)
 library(ggplot2)
+library(leaflet)
+library(leaflet.esri)
+library(leaflet.extras)
 
 # Set up connection to sql server
 con <- odbcDriverConnect('driver={SQL Server};
@@ -27,15 +30,18 @@ p <- ggplot(data = dist.counts, aes(x=Var1, y=Freq)) +
 p
 
 ## Create a map using leaflet to practice and explore the data between districts
-options(viewer=NULL)
+
+# Add in url for Boston's tiled basemap layer
+bos <- "https://awsgeo.boston.gov/arcgis/rest/services/Basemaps/BostonCityBasemap_WM/MapServer"
+
 m <- leaflet() %>%
-  addTiles() %>% # add default tile
+  addProviderTiles(providers$Esri.WorldGrayCanvas) %>% 
   addMarkers(lng = -71.057886, lat = 42.360247, 
-             popup = "Boston City Hall")
+             popup = "Boston City Hall") %>%
+  setView(lng = -71.057886, lat = 42.360247, zoom = 13) %>%
+  addEsriTiledMapLayer(url = bos)
 
 m
-
-
 
 
 
